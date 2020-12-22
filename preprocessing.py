@@ -3,7 +3,7 @@ import numpy as np
 from PIL import Image
 import os
 
-size = 244
+size = 200
 
 
 def resize_aspect_fit(path, final_size):
@@ -49,31 +49,36 @@ def labels(images, label):
 #         result[labels_list[i]][i] = 1
 #     return result.T
 
-resize_aspect_fit("./Data/Cats", size)
+resize_aspect_fit("./Data/Cats/pack0", size)
+resize_aspect_fit("./Data/Cats/pack1", size)
 resize_aspect_fit("Data/Not_cats", size)
 
-cats = load_images("Data/Cats")
-not_cats = load_images("Data/Not_Cats")
-print(cats.shape, not_cats.shape)
+cats_images0 = load_images("Data/Cats/pack0")
+cats_images1 = load_images("Data/Cats/pack1")
+cats_images = np.concatenate((cats_images0, cats_images1), 0)
+cats_labels = labels(cats_images, 1)
 
-# # chinatree_labels = labels(chinatree_images, 0)
-# fig_labels = labels(fig_images, 0)
-# judastree_labels = labels(judastree_images, 1)
-# palm_labels = labels(palm_images, 2)
-# pine_labels = labels(pine_images, 3)
-#
-#
-# all_images = np.concatenate((fig_images, judastree_images, palm_images, pine_images), 0)
-# all_labels = np.concatenate((fig_labels, judastree_labels, palm_labels, pine_labels), 0)
-#
-# shuffler = np.random.permutation(all_images.shape[0])
-# all_images_shuffled = all_images[shuffler]
-# all_labels_shuffled = labels_matrix(all_labels[shuffler], 4)
-#
-# split = 500
-# train_data = all_images_shuffled[split:]
-# train_labels = all_labels_shuffled[split:]
-# test_data = all_images_shuffled[:split]
-# test_labels = all_labels_shuffled[:split]
-#
-# print('Data loaded')
+not_cats_images = load_images("Data/Not_cats")
+not_cats_labels = labels(not_cats_images, 0)
+
+all_images = np.concatenate((cats_images, not_cats_images), 0)
+all_labels = np.concatenate((cats_labels, not_cats_labels), 0)
+
+shuffler = np.random.permutation(all_images.shape[0])
+all_images_shuffled = all_images[shuffler]
+# all_labels_shuffled = labels_matrix(all_labels[shuffler], 2)
+all_labels_shuffled = all_labels[shuffler]
+
+# check:
+from matplotlib import pyplot as plt
+plt.imshow(all_images_shuffled[0], interpolation='nearest')
+plt.show()
+print(all_labels_shuffled[0])
+
+split = 10
+train_data = all_images_shuffled[split:]
+train_labels = all_labels_shuffled[split:]
+test_data = all_images_shuffled[:split]
+test_labels = all_labels_shuffled[:split]
+
+print('Data loaded')
