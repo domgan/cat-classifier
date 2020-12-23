@@ -36,7 +36,10 @@ def resize(path, final_size):
         if item == '.DS_Store' or 'resized' in item:
             continue
         f, e = os.path.splitext(file_path)
-        img = Image.open(file_path)  # image extension *.png,*.jpg
+        try:
+            img = Image.open(file_path).convert('RGB')  # image extension *.png,*.jpg
+        except UnidentifiedImageError:
+            continue
         img = img.resize((final_size, final_size), Image.ANTIALIAS)
         img.save(f + 'resized.jpg', 'JPEG')  # format may what u want ,*.png,*jpg,*.gif
     return load_images(path, final_size)
@@ -50,25 +53,27 @@ def load_images(directory, size):
         img = np.asarray(Image.open(f), dtype=np.float32)[..., :3]
         if not img.shape == (size, size, 3):
             continue
-        img = img / 255
+        img /= 255.0
         result.append(img)
     result = np.stack(result, axis=0)
     return result
 
 
 def labels(images, label):
-    result = np.zeros(images.shape[0], dtype=int) + label
+    result = np.zeros(images.shape[0]) + label
     return result
 
 
 def create_tensors(cats_path, not_cats_path, size=128):
-    cats_images0 = resize("./Data/Cats/pack0", size)
-    cats_images1 = resize("./Data/Cats/pack1", size)
-    not_cats_images0 = resize("Data/Not_cats/pack0", size)
-    not_cats_images1 = resize("Data/Not_cats/pack1", size)
-
-    cats_images = np.concatenate((cats_images0, cats_images1), 0)
-    not_cats_images = np.concatenate((not_cats_images0, not_cats_images1), 0)
+    # cats_images0 = resize("./Data/Cats/pack0", size)
+    # cats_images1 = resize("./Data/Cats/pack1", size)
+    # not_cats_images0 = resize("Data/Not_cats/pack0", size)
+    # not_cats_images1 = resize("Data/Not_cats/pack1", size)
+    #
+    # cats_images = np.concatenate((cats_images0, cats_images1), 0)
+    # not_cats_images = np.concatenate((not_cats_images0, not_cats_images1), 0)
+    cats_images = resize("Data/PetImages/Cat", size)
+    not_cats_images = resize("Data/PetImages/Dog", size)
 
     cats_labels = labels(cats_images, 1)
     not_cats_labels = labels(not_cats_images, 0)
@@ -77,7 +82,7 @@ def create_tensors(cats_path, not_cats_path, size=128):
     all_labels = np.concatenate((cats_labels, not_cats_labels), 0)
 
     train_data, test_data, train_labels, test_labels = \
-        train_test_split(all_images, all_labels, test_size=0.12)
+        train_test_split(all_images, all_labels, test_size=0.18)
 
     # check: #
     from matplotlib import pyplot as plt
@@ -89,8 +94,6 @@ def create_tensors(cats_path, not_cats_path, size=128):
         plt.show()
     ##  ##  ##
 
-    # train_data = train_data[:500]
-    # train_labels = train_labels[:500]
     print(train_data.shape, train_labels.shape)
     print('Data loaded')
     return train_data, test_data, train_labels, test_labels
