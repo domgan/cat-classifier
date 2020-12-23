@@ -1,5 +1,7 @@
 __pycache__
 .idea
 
-Data/*
+Data/Cats
+Data/Not_cats
+Data/Test
 model.h5
