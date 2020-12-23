@@ -7,15 +7,18 @@ import numpy as np
 
 def resize_and_load_file(path, final_size=128):
     if os.path.isfile(path):
-        im = Image.open(path)
-        size = im.size
-        ratio = float(final_size) / max(size)
-        new_image_size = tuple([int(x * ratio) for x in size])
-        im = im.resize(new_image_size, Image.ANTIALIAS)
-        new_im = Image.new("RGB", (final_size, final_size))
-        new_im.paste(im, ((final_size - new_image_size[0]) // 2, (final_size - new_image_size[1]) // 2))
+        # im = Image.open(path)
+        # size = im.size
+        # ratio = float(final_size) / max(size)
+        # new_image_size = tuple([int(x * ratio) for x in size])
+        # im = im.resize(new_image_size, Image.ANTIALIAS)
+        # new_im = Image.new("RGB", (final_size, final_size))
+        # new_im.paste(im, ((final_size - new_image_size[0]) // 2, (final_size - new_image_size[1]) // 2))
+        img = Image.open(path)  # image extension *.png,*.jpg
+        img = img.resize((final_size, final_size), Image.ANTIALIAS)
 
-        img = np.asarray(new_im)
+        img = np.asarray(img, dtype=np.float32)[..., :3]
+
         img = img / 255
         return np.expand_dims(img, 0)
 
@@ -24,7 +27,7 @@ def cat_check(file_path):
     model = load_model('model.h5')
     image = resize_and_load_file(file_path)
 
-    out = model.predict(image)
+    out = model.predict(image)[0][0]
     print(out)
     if out < 0.5:
         title = 'That\'s not cat ;_;'

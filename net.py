@@ -1,11 +1,11 @@
 from tensorflow import keras
 from tensorflow.keras import layers
-from preprocessing import train_data, train_labels, test_data, test_labels
+from preprocessing import train_data, test_data, train_labels, test_labels
 import matplotlib.pyplot as plt
 
 # filters = 64
 # model = keras.Sequential([
-#     keras.layers.Conv2D(filters, (3, 3), input_shape=train_data.shape[1:], activation='relu'),
+#     keras.layers.Conv2D(filters, (3, 3), input_shape=train_data.shape[1:]),# activation='relu'),
 #     keras.layers.MaxPooling2D(pool_size=(2, 2)),
 #     # keras.layers.BatchNormalization(),
 #
@@ -40,12 +40,12 @@ data_augmentation = keras.Sequential(
 
 def make_model(input_shape, num_classes):
     inputs = keras.Input(shape=input_shape)
-    # Image augmentation block
-    x = data_augmentation(inputs)
+    # # Image augmentation block
+    # x = data_augmentation(inputs)
 
     # Entry block
-    x = layers.experimental.preprocessing.Rescaling(1.0 / 255)(x)
-    x = layers.Conv2D(32, 3, strides=2, padding="same")(x)
+    # x = layers.experimental.preprocessing.Rescaling(1.0 / 255)(inputs)
+    x = layers.Conv2D(32, 3, strides=2, padding="same")(inputs)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
 
@@ -90,13 +90,14 @@ def make_model(input_shape, num_classes):
     return keras.Model(inputs, outputs)
 model = make_model(input_shape=train_data.shape[1:], num_classes=2)
 
-model.compile(optimizer=keras.optimizers.Adam(lr=1e-3),
+model.compile(optimizer=keras.optimizers.Adam(lr=1e-4),
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-history = model.fit(train_data, train_labels, epochs=50, validation_split=0.20)
+history = model.fit(train_data, train_labels, epochs=5,
+                    validation_split=0.25)
 
-
+# model.summary()
 def graphs(history):
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
