@@ -4,12 +4,12 @@ from PIL import Image, UnidentifiedImageError
 import os
 from sklearn.model_selection import train_test_split
 
-size = 200
+size = 128
 
 
 def resize_delete_load(path, final_size):
     dirs = os.listdir(path)
-    for item in dirs[:500]:
+    for item in dirs:
         file_path = os.path.join(path, item)
         if item == '.DS_Store' or 'resized' in item:
             continue
@@ -31,35 +31,28 @@ def resize_delete_load(path, final_size):
     return load_images(path)
 
 
-def resize(path, size):
+def resize(path, final_size):
     dirs = os.listdir(path)
-    for item in dirs[:500]:
+    for item in dirs:
+        file_path = os.path.join(path, item)
         if 'resized' in item:
             continue
-        if os.path.isfile(path+item):
-            try:
-                im = Image.open(path+item)
-            except UnidentifiedImageError:
-                continue
-            f, e = os.path.splitext(path+item)
-            imResize = im.resize((size, size), Image.ANTIALIAS).convert('RGB')
-            imResize.save(f+'resized.jpg', 'JPEG', quality=80)
+        f, e = os.path.splitext(file_path)
+        img = Image.open(file_path)  # image extension *.png,*.jpg
+        img = img.resize((final_size, final_size), Image.ANTIALIAS)
+        img.save(f + 'resized.jpg', 'JPEG')  # format may what u want ,*.png,*jpg,*.gif
     return load_images(path)
 
 
 def load_images(directory):
-    ctr = 0
     result = []
     for f in glob.iglob(directory + "/*"):
-        ctr += 1
-        if ctr > 1500:
-            continue
         if 'resized' not in f:
             continue
         img = np.asarray(Image.open(f))
         if not img.shape == (size, size, 3):
             continue
-        img = img / 255
+        # img = img / 255
         result.append(img)
     result = np.stack(result, axis=0)
     return result
@@ -70,16 +63,13 @@ def labels(images, label):
     return result
 
 
-# cats_images0 = resize_delete_load("./Data/Cats/pack0", size)
-# cats_images1 = resize_delete_load("./Data/Cats/pack1", size)
-# not_cats_images0 = resize_delete_load("Data/Not_cats/pack0", size)
-# not_cats_images1 = resize_delete_load("Data/Not_cats/pack1", size)
-#
-# cats_images = np.concatenate((cats_images0, cats_images1), 0)
-# not_cats_images = np.concatenate((not_cats_images0, not_cats_images1), 0)
+cats_images0 = resize("./Data/Cats/pack0", size)
+cats_images1 = resize("./Data/Cats/pack1", size)
+not_cats_images0 = resize("Data/Not_cats/pack0", size)
+not_cats_images1 = resize("Data/Not_cats/pack1", size)
 
-cats_images = resize("Data/PetImages/Cat/", size)
-not_cats_images = resize("Data/PetImages/Dog/", size)
+cats_images = np.concatenate((cats_images0, cats_images1), 0)
+not_cats_images = np.concatenate((not_cats_images0, not_cats_images1), 0)
 
 cats_labels = labels(cats_images, 1)
 not_cats_labels = labels(not_cats_images, 0)
@@ -95,6 +85,6 @@ train_data, test_data, train_labels, test_labels = \
 from matplotlib import pyplot as plt
 plt.imshow(train_data[0], interpolation='nearest')
 plt.show()
-print(train_data.shape[0], train_labels[0])
+print(train_data.shape, train_labels[0])
 
 print('Data loaded')

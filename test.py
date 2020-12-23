@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 
 
-def resize_and_load_file(path, final_size=200):
+def resize_and_load_file(path, final_size=128):
     if os.path.isfile(path):
         im = Image.open(path)
         size = im.size
