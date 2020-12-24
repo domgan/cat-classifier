@@ -114,7 +114,7 @@ model.compile(optimizer=keras.optimizers.Adam(lr=1e-6),
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-history = model.fit(train_data, train_labels, epochs=50,
+history = model.fit(train_data, train_labels, epochs=25,
                     validation_split=0.25)
 
 # model.summary()
@@ -143,3 +143,14 @@ print('test loss, test acc:', results)
 
 model.save('model.h5', include_optimizer=False)
 print("Saved model to disk")
+
+
+from test import resize_and_load_file
+def quick_check(file_path):
+    image = resize_and_load_file(file_path)
+    out = model.predict(image)
+    print(out)
+
+quick_check('Data/Test/test_cat0.JPG')
+quick_check('Data/Test/test_not_cat0.JPG')
+quick_check('Data/Test/test_not_cat1.JPG')
