@@ -39,6 +39,6 @@ def cat_check(file_path):
     plt.show()
 
 
-cat_check('Data/Test/test_cat0.JPG')
-cat_check('Data/Test/test_not_cat0.JPG')
-cat_check('Data/Test/test_not_cat1.JPG')
+# cat_check('Data/Test/test_cat0.JPG')
+# cat_check('Data/Test/test_not_cat0.JPG')
+# cat_check('Data/Test/test_not_cat1.JPG')

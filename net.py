@@ -148,9 +148,20 @@ print("Saved model to disk")
 from test import resize_and_load_file
 def quick_check(file_path):
     image = resize_and_load_file(file_path)
-    out = model.predict(image)
+    out = model.predict(image)[0][0]
     print(out)
+    if out < 0.5:
+        title = 'That\'s not cat ;_;'
+    else:
+        title = 'That\'s cat!'
+
+    plt.imshow(image[0], interpolation='nearest')
+    plt.title(title)
+    plt.show()
 
 quick_check('Data/Test/test_cat0.JPG')
+quick_check('Data/Test/test_cat1.JPG')
+quick_check('Data/Test/test_cat2.JPG')
 quick_check('Data/Test/test_not_cat0.JPG')
 quick_check('Data/Test/test_not_cat1.JPG')
+quick_check('Data/Test/test_not_cat2.JPG')
