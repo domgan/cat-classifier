@@ -1,27 +1,23 @@
 # Imports
 import requests
-
-imgNum = 4000
-imgDim = 128
-
-print('Download started...')
-for i in range(imgNum):
-	img_data = requests.get('https://picsum.photos/' + str(imgDim)).content
-	with open('Data/Not_cats/pack_rand/' + str(i) + '.jpg', 'wb') as handler:
-	    handler.write(img_data)
-print('Done')
-
-
 import hashlib
 import os
 from time import sleep
 
-def remove_duplicate(path):
-	# cwd = os.getcwd()
-	# os.chdir(os.path.join(cwd, path))
+# change to os.path.join
+def download_random_images(path, imgNum, imgDim):
+	print('Download started...')
+	for i in range(imgNum):
+		img_data = requests.get('https://picsum.photos/' + str(imgDim)).content
+		with open(path + '/' + str(i) + '.jpg', 'wb') as handler:
+		    handler.write(img_data)
+	print('Done')
+
+
+def remove_duplicates(path):
 	unique = {}
 	for file in os.scandir(path):
-		with open(path + file.name, 'rb') as f:
+		with open(path + '/' + file.name, 'rb') as f:
 			filehash = hashlib.md5(f.read()).hexdigest()
 			if filehash not in unique:
 				unique[filehash] = file.name
@@ -33,7 +29,10 @@ def remove_duplicate(path):
 				except FileNotFoundError:
 					print('Already deleted')
 					continue
-		sleep(0.02)
 
-path = r'Data/Not_cats/pack_rand/'
-remove_duplicate(path)
+
+imgNum = 4000
+imgDim = 128
+path = 'Data/Not_cats/pack_rand'
+download_random_images(path, imgNum, imgDim)
+remove_duplicates(path)

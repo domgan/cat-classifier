@@ -6,30 +6,6 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 
 
-# def resize_delete_load(path, final_size):
-#     dirs = os.listdir(path)
-#     for item in dirs:
-#         file_path = os.path.join(path, item)
-#         if item == '.DS_Store' or 'resized' in item:
-#             continue
-#         if os.path.isfile(file_path):
-#             try:
-#                 im = Image.open(file_path)
-#             except UnidentifiedImageError:
-#                 continue
-#             f, e = os.path.splitext(file_path)
-#             size = im.size
-#             if size[0] < final_size or size[1] < final_size:
-#                 continue
-#             ratio = float(final_size) / max(size)
-#             new_image_size = tuple([int(x * ratio) for x in size])
-#             im = im.resize(new_image_size, Image.ANTIALIAS)
-#             new_im = Image.new("RGB", (final_size, final_size))
-#             new_im.paste(im, ((final_size - new_image_size[0]) // 2, (final_size - new_image_size[1]) // 2))
-#             new_im.save(f + 'resized.jpg', 'JPEG', quality=90)
-#     return load_images(path, final_size)
-
-
 def resize(path, final_size):
     dirs = os.listdir(path)
     for item in dirs:
@@ -82,8 +58,6 @@ def create_tensors(cats_path, not_cats_path, size=128):
 
     cats_images = np.concatenate((cats_images0, cats_images1, cats_images2), 0)
     not_cats_images = np.concatenate((not_cats_images0, not_cats_images1, not_cats_images2, not_cats_images_rand), 0)
-    # cats_images = resize("Data/PetImages/Cat", size)
-    # not_cats_images = resize("Data/PetImages/Dog", size)
     print(str(cats_images.shape[0]), 'of cats')
     print(str(not_cats_images.shape[0]), 'of not cats')
 

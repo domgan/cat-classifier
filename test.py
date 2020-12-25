@@ -5,40 +5,40 @@ from PIL import Image
 import numpy as np
 
 
-def resize_and_load_file(path, final_size=128):
-    if os.path.isfile(path):
-        # im = Image.open(path)
-        # size = im.size
-        # ratio = float(final_size) / max(size)
-        # new_image_size = tuple([int(x * ratio) for x in size])
-        # im = im.resize(new_image_size, Image.ANTIALIAS)
-        # new_im = Image.new("RGB", (final_size, final_size))
-        # new_im.paste(im, ((final_size - new_image_size[0]) // 2, (final_size - new_image_size[1]) // 2))
-        img = Image.open(path)  # image extension *.png,*.jpg
-        img = img.resize((final_size, final_size), Image.ANTIALIAS)
+class Checker:
+    def __init__(self, size=128):
+        self.size = size
 
-        img = np.asarray(img, dtype=np.float32)[..., :3]
+    def _resize_and_load(self, path):
+        if os.path.isfile(path):
+            img = Image.open(path)  # image extension *.png,*.jpg
+            img = img.resize((self.size, self.size), Image.ANTIALIAS)
 
-        img = img / 255
-        return np.expand_dims(img, 0)
+            img = np.asarray(img, dtype=np.float32)[..., :3]
 
+            img = img / 255
+            return np.expand_dims(img, 0)
 
-def cat_check(file_path):
-    model = load_model('model.h5')
-    image = resize_and_load_file(file_path)
+    def check_file(self, file_path):
+        model = load_model('model.h5', compile=False)
+        image = self._resize_and_load(file_path)
 
-    out = model.predict(image)[0][0]
-    print(out)
-    if out < 0.5:
-        title = 'That\'s not cat ;_;'
-    else:
-        title = 'That\'s cat!'
+        out = model.predict(image)[0][0]
+        print(out)
+        if out < 0.5:
+            title = 'That\'s not cat ;_;'
+        else:
+            title = 'That\'s cat!'
 
-    plt.imshow(image[0], interpolation='nearest')
-    plt.title(title)
-    plt.show()
+        plt.imshow(image[0], interpolation='nearest')
+        plt.title(title)
+        plt.show()
 
 
-# cat_check('Data/Test/test_cat0.JPG')
-# cat_check('Data/Test/test_not_cat0.JPG')
-# cat_check('Data/Test/test_not_cat1.JPG')
+checker = Checker()
+checker.check_file('Data/Test/test_cat0.JPG')
+checker.check_file('Data/Test/test_cat1.JPG')
+checker.check_file('Data/Test/test_cat2.JPG')
+checker.check_file('Data/Test/test_not_cat0.JPG')
+checker.check_file('Data/Test/test_not_cat1.JPG')
+checker.check_file('Data/Test/test_not_cat2.JPG')

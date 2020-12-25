@@ -3,33 +3,6 @@ from tensorflow.keras import layers
 from preprocessing import train_data, test_data, train_labels, test_labels
 import matplotlib.pyplot as plt
 
-# filters = 64
-# model = keras.Sequential([
-#     keras.layers.Conv2D(filters, (3, 3), input_shape=train_data.shape[1:]),# activation='relu'),
-#     keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#     # keras.layers.BatchNormalization(),
-#
-#     keras.layers.Conv2D(filters, (3, 3), activation='relu'),
-#     keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#
-#     keras.layers.Conv2D(filters * 2, (3, 3), activation='relu'),
-#     keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#
-#     keras.layers.Conv2D(filters * 2, (3, 3), activation='relu'),
-#     keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#
-#     keras.layers.Conv2D(filters * 3, (3, 3), activation='relu'),
-#     keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#
-#     keras.layers.Conv2D(filters * 3, (3, 3), activation='relu'),
-#     keras.layers.MaxPooling2D(pool_size=(2, 2)),
-#
-#     keras.layers.Flatten(),
-#     keras.layers.Dense(filters * 4, activation='relu'),
-#     keras.layers.Dropout(0.5),
-#     keras.layers.Dense(1, activation='sigmoid')
-# ])
-
 # data_augmentation = keras.Sequential(
 #     [
 #         layers.experimental.preprocessing.RandomFlip("horizontal"),
