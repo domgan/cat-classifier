@@ -1,5 +1,5 @@
 from tensorflow import keras
-from tensorflow.keras import layers
+from tensorflow.keras import layers, Sequential
 from preprocessing import train_data, test_data, train_labels, test_labels
 import matplotlib.pyplot as plt
 
@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # )
 
 
-def baseline_model():
+def baseline_model(input_shape):
     model = Sequential()
     model.add(keras.layers.BatchNormalization(input_shape=input_shape))
     model.add(keras.layers.Conv2D(32, (3, 3), padding='same', activation='relu'))
@@ -81,13 +81,15 @@ def make_model(input_shape, num_classes=2, filters=32):
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(units, activation=activation)(x)
     return keras.Model(inputs, outputs)
+    
 model = make_model(input_shape=train_data.shape[1:], filters=64)
+# model = baseline_model(train_data.shape[1:])
 
-model.compile(optimizer=keras.optimizers.Adam(lr=1e-5),
+model.compile(optimizer=keras.optimizers.Adam(lr=1e-6),  # lr should be at least 1e-6
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-history = model.fit(train_data, train_labels, epochs=25,
+history = model.fit(train_data, train_labels, epochs=50,
                     validation_split=0.25)
 
 # model.summary()
