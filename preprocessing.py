@@ -4,7 +4,7 @@ from PIL import Image, UnidentifiedImageError
 import os
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
-
+from matplotlib import pyplot as plt
 
 def resize(path, final_size):
     dirs = os.listdir(path)
@@ -46,7 +46,7 @@ def labels(images, label):
     return result
 
 
-def create_tensors(cats_path, not_cats_path, size=128):
+def create_tensors(cats_path, not_cats_path, size=128, check=False):  # implement arguments
     cats_images0 = resize("./Data/Cats/pack0", size)
     cats_images1 = resize("./Data/Cats/pack1", size)
     cats_images2 = resize("./Data/Cats/pack2", size)
@@ -69,17 +69,15 @@ def create_tensors(cats_path, not_cats_path, size=128):
     # all_labels = to_categorical(all_labels, num_classes=2)
 
     train_data, test_data, train_labels, test_labels = \
-        train_test_split(all_images, all_labels, test_size=0.10)
+        train_test_split(all_images, all_labels, test_size=0.12)
 
-    # check: #
-    from matplotlib import pyplot as plt
-    rand = np.abs(np.random.randint(0, 200, 5))
-    print(rand)
-    for val in rand:
-        plt.imshow(train_data[val])
-        plt.title(str(train_labels[val]))
-        plt.show()
-    ##  ##  ##
+    if check:
+        rand = np.abs(np.random.randint(0, 200, 10))
+        print(rand)
+        for val in rand:
+            plt.imshow(train_data[val])
+            plt.title(str(train_labels[val]))
+            plt.show()
 
     print(train_data.shape, train_labels.shape)
     print('Data loaded')

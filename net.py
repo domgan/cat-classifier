@@ -83,7 +83,7 @@ def make_model(input_shape, num_classes=2, filters=32):
     return keras.Model(inputs, outputs)
 model = make_model(input_shape=train_data.shape[1:], filters=64)
 
-model.compile(optimizer=keras.optimizers.Adam(lr=1e-6),
+model.compile(optimizer=keras.optimizers.Adam(lr=1e-5),
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
@@ -116,25 +116,3 @@ print('test loss, test acc:', results)
 
 model.save('model.h5', include_optimizer=False)
 print("Saved model to disk")
-
-
-from test import resize_and_load_file
-def quick_check(file_path):
-    image = resize_and_load_file(file_path)
-    out = model.predict(image)[0][0]
-    print(out)
-    if out < 0.5:
-        title = 'That\'s not cat ;_;'
-    else:
-        title = 'That\'s cat!'
-
-    plt.imshow(image[0], interpolation='nearest')
-    plt.title(title)
-    plt.show()
-
-quick_check('Data/Test/test_cat0.JPG')
-quick_check('Data/Test/test_cat1.JPG')
-quick_check('Data/Test/test_cat2.JPG')
-quick_check('Data/Test/test_not_cat0.JPG')
-quick_check('Data/Test/test_not_cat1.JPG')
-quick_check('Data/Test/test_not_cat2.JPG')
