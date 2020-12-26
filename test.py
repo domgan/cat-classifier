@@ -11,7 +11,7 @@ class Checker:
 
     def _resize_and_load(self, path):
         if os.path.isfile(path):
-            img = Image.open(path)  # image extension *.png,*.jpg
+            img = Image.open(path).convert('RGB')  # image extension *.png,*.jpg
             img = img.resize((self.size, self.size), Image.ANTIALIAS)
 
             img = np.asarray(img, dtype=np.float32)[..., :3]
@@ -23,7 +23,10 @@ class Checker:
         model = load_model('model.h5', compile=False)
         image = self._resize_and_load(file_path)
 
-        out = model.predict(image)[0][0]
+        try:
+            out = model.predict(image)[0][0]
+        except ValueError:
+            raise Exception('File not found')
         print(out)
         if out < 0.5:
             title = 'That\'s not cat ;_;'
@@ -39,7 +42,11 @@ checker = Checker()
 checker.check_file('Data/Test/test_cat0.JPG')
 checker.check_file('Data/Test/test_cat1.JPG')
 checker.check_file('Data/Test/test_cat2.JPG')
+checker.check_file('Data/Test/test_cat3.JPG')
 checker.check_file('Data/Test/test_not_cat0.JPG')
 checker.check_file('Data/Test/test_not_cat1.JPG')
 checker.check_file('Data/Test/test_not_cat2.JPG')
 checker.check_file('Data/Test/test_not_cat3.JPG')
+
+checker.check_file('Data/Test/wojtest0.JPG')
+checker.check_file('Data/Test/wojtest1.JPG')

@@ -30,13 +30,10 @@ def baseline_model(input_shape):
     return model
 
 
-def make_model(input_shape, num_classes=2, filters=32):
+def make_model(input_shape, filters=32):
     inputs = keras.Input(shape=input_shape)
-    # # Image augmentation block
-    # x = data_augmentation(inputs)
 
     # Entry block
-    # x = layers.experimental.preprocessing.Rescaling(1.0 / 255)(inputs)
     x = layers.Conv2D(filters, 3, strides=2, padding="same")(inputs)
     x = layers.BatchNormalization()(x)
     x = layers.Activation("relu")(x)
@@ -71,15 +68,8 @@ def make_model(input_shape, num_classes=2, filters=32):
     x = layers.Activation("relu")(x)
 
     x = layers.GlobalAveragePooling2D()(x)
-    if num_classes == 2:
-        activation = "sigmoid"
-        units = 1
-    else:
-        activation = "softmax"
-        units = num_classes
-
     x = layers.Dropout(0.5)(x)
-    outputs = layers.Dense(units, activation=activation)(x)
+    outputs = layers.Dense(1, activation="sigmoid")(x)
     return keras.Model(inputs, outputs)
     
 model = make_model(input_shape=train_data.shape[1:], filters=64)
