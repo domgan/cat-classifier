@@ -75,11 +75,11 @@ def make_model(input_shape, filters=32):
 model = make_model(input_shape=train_data.shape[1:], filters=64)
 # model = baseline_model(train_data.shape[1:])
 
-model.compile(optimizer=keras.optimizers.Adam(lr=1e-6),  # lr should be at least 1e-6
+model.compile(optimizer=keras.optimizers.Adam(lr=1e-7),  # lr should be at least 1e-6
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-history = model.fit(train_data, train_labels, epochs=50,
+history = model.fit(train_data, train_labels, epochs=100,
                     validation_split=0.25)
 
 # model.summary()
