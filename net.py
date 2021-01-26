@@ -1,6 +1,6 @@
 from tensorflow import keras
 from tensorflow.keras import layers, Sequential
-from preprocessing import train_data, test_data, train_labels, test_labels
+from src.preprocessing import train_data, test_data, train_labels, test_labels
 import matplotlib.pyplot as plt
 
 # data_augmentation = keras.Sequential(
@@ -79,8 +79,7 @@ model.compile(optimizer=keras.optimizers.Adam(lr=1e-7),  # lr should be at least
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-history = model.fit(train_data, train_labels, epochs=100,
-                    validation_split=0.25)
+history = model.fit(train_data, train_labels, epochs=100, validation_split=0.25)
 
 # model.summary()
 def graphs(history):

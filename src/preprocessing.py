@@ -50,13 +50,14 @@ def create_tensors(cats_path, not_cats_path, size=128, check=False):  # implemen
     cats_images0 = resize("./Data/Cats/pack0", size)
     cats_images1 = resize("./Data/Cats/pack1", size)
     cats_images2 = resize("./Data/Cats/pack2", size)
+    cats_images3 = resize("./Data/Cats/pack_rand", size)
     not_cats_images0 = resize("Data/Not_cats/pack0", size)
     not_cats_images1 = resize("Data/Not_cats/pack1", size)
     not_cats_images2 = resize("Data/Not_cats/pack2", size)
     not_cats_images_rand = resize("Data/Not_cats/pack_rand", size)
 
 
-    cats_images = np.concatenate((cats_images0, cats_images1, cats_images2), 0)
+    cats_images = np.concatenate((cats_images0, cats_images1, cats_images2, cats_images3), 0)
     not_cats_images = np.concatenate((not_cats_images0, not_cats_images1, not_cats_images2, not_cats_images_rand), 0)
     print(str(cats_images.shape[0]), 'of cats')
     print(str(not_cats_images.shape[0]), 'of not cats')
